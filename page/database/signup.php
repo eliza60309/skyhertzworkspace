@@ -21,13 +21,6 @@
 	</style>
 	<?php
 		session_start();
-		if($_SESSION["Authenticated"] == true)
-		{;
-				//		header("Location: /database/login.php");
-					//	exit();
-		}
-//		session_unset();
-//		session_destroy();
 	?>
 </head>
 

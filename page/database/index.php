@@ -19,28 +19,9 @@
 			text-align:center;
 		}
 	</style>
-<!--
 	<?php
 		session_start();
-//	if($_SESSION['Authenticated'] == true)
-//	{
-//echo "You are authenticated";
-//
-//header("Location: ./login.php");
-//		exit();
-
-//	}
-//	$_SESSION['Authenticated'] = true;
-//if ($_SESSION['Authenticated'])
-//{
-//		session_unset();
-//		session_destroy();
-//}
-//else
-//{
-//}
 	?>
--->
 </head>
 
 <!########################################################>
@@ -66,26 +47,13 @@
 					</div>
 				</li>
 				<li class="nav-item active">
-					<a class="nav-link" href="#">
-						
-						<?php		
-						
+					<a class="nav-link" href="/database/index.php">
+						<?php
 						if($_SESSION["Authenticated"] == true)
 						{
 							echo $_SESSION["username"];
 						}
 						else echo "login"
-						//header("Location: ./login.php");
-						//exit();
-						//$_SESSION['Authenticated'] = true;
-					//if ($_SESSION['Authenticated'])
-//{
-//		session_unset();
-//		session_destroy();
-//}
-//else
-//{
-//}
 						?>
 					</a>	
 				</li>
@@ -100,17 +68,27 @@
 				<div class="card-title"><h3>Login</h3></div>
 				<form action="login.php" method="post">
 					<div class="input-group">
-						<input id="username" type="text" class="form-control" name="username" placeholder="Username">
+						<input id="username" type="text" class="form-control
+						<?php
+							if($_SESSION["error"] == true)echo " is-invalid";
+						?>
+						" name="username" placeholder="Username">
 					</div><br>
 					<div class="input-group">
-						<input id="password" type="password" class="form-control" name="password" placeholder="Password">
+						<input id="password" type="password" class="form-control
+						<?php
+							if($_SESSION["error"] == true)echo " is-invalid";
+						?>
+						" name="password" placeholder="Password">
 					</div><br>
 					<button type="submit" class="btn btn-secondary">submit</button>&emsp;<a href="/database/signup.php">Sign up</a>
 				</form>
 			</div>
 		</div>
 	</div><!-- /.container -->
-
+<?php
+	$_SESSON["error"] = false;
+?>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->

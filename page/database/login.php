@@ -12,17 +12,22 @@
 			$_SESSION["username"] = $_POST["username"];
 			if($re->root == 1)
 			{
-				header("Location: ./admin.php");
+				$_SESSION["Authenticated"] = true;
+				header("Location: /database/admin.php");
 				exit();
 			}
 			else
 			{
-				header("Location: ./user.php");
+				$_SESSION["Authenticated"] = true;
+				header("Location: /database/user.php");
 				exit();
 			}
 		}
 		else echo "false";
 	}
+	$_SESSION["error"] = true;
+	header("Location: /database/index.php");
+	exit();
 /*	if($_SESSION["submit"] == true)
 	{
 		if($_POST["username"] == "")$usernameinvalid = true;
