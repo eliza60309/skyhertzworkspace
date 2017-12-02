@@ -41,9 +41,15 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Database</a>
 					<div class="dropdown-menu" aria-labelledby="dropdown01">
-						<a class="dropdown-item" href="/database/index.php">Login page</a>
-						<a class="dropdown-item" href="/database/signup.php">Sign up</a>
-	
+						<a class="dropdown-item" href="/database/logout.php">Logout</a>
+						<a class="dropdown-item" href="/database/home.php">Home</a>
+						<a class="dropdown-item" href="/database/house.php">My house</a>
+						<a class="dropdown-item" href="/database/favorite.php">Favorite</a>
+						<a class="dropdown-item" href="/database/admin.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -53,9 +59,10 @@
 						?>
 					</a>
 				</li>
+				<!--
 				<li class="nav-item active">
-					<a class="nav-link" href="/database/logout.php">Logout</a>	
 				</li>
+				-->
 			</ul>
 		</div>
 	</nav>
@@ -68,7 +75,6 @@
 				<div class="card-title">--><h3>User information</h3><!--</div>-->
 					<h4>
 						<?php
-							session_start();
 							if($_SESSION["Authenticated"] != true)
 							{
 								header("Location: /database/logout.php");
@@ -109,7 +115,7 @@
 										echo "<td>" . $re->username . "</td>\n";
 										echo "<td>" . $re->name . "</td>\n";
 										echo "<td>" . $re->email . "</td>\n";
-										if($re->username == $_SESSION["username"])echo "<td>Admin</td>\n";
+										if($re->username == $_SESSION["username"])echo "<td>Admin</td><td></td>\n";
 										else if($re->root == 1)
 										{
 											echo "<td>Admin</td>\n";

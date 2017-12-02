@@ -10,7 +10,9 @@
 		if($re->passwd == hash('sha256', $_POST["password"]))
 		{
 			$_SESSION["username"] = $_POST["username"];
-			if($re->root == 1)
+			$_SESSION["uid"] = $re->id;
+			$_SESSION["root"] = $re->root;
+/*			if($re->root == 1)
 			{
 				$_SESSION["Authenticated"] = true;
 				header("Location: /database/admin.php");
@@ -21,9 +23,12 @@
 				$_SESSION["Authenticated"] = true;
 				header("Location: /database/user.php");
 				exit();
-			}
+			}*/
+			$_SESSION["Authenticated"] = true;
+			header("Location: /database/home.php");
+			exit();
 		}
-		else echo "false";
+		//else echo "false";
 	}
 	$_SESSION["error"] = true;
 	header("Location: /database/index.php");

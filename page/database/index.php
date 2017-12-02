@@ -21,6 +21,11 @@
 	</style>
 	<?php
 		session_start();
+		if($_SESSION["Authenticated"] == true)
+		{
+			header("Location: /database/logout.php");
+			exit();
+		}
 	?>
 </head>
 
