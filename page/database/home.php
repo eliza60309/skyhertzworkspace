@@ -238,14 +238,19 @@
 					{
 						if(!empty($_POST["favorite"]) && $_SESSION["Authenticated"])
 						{
-							$ret = $pdo->prepare("insert into favorite (user_id, favorite_id) values (?, ?)");
+							$ret = $pdo->prepare("select * from favorite where user_id = ? and favorite_id = ?");
 							$ret->execute(array(intval($_SESSION["uid"]), intval($_POST["favorite"])));
+							if($re = $ret->fetchObject());
+							else
+							{
+								$ret = $pdo->prepare("insert into favorite (user_id, favorite_id) values (?, ?)");
+								$ret->execute(array(intval($_SESSION["uid"]), intval($_POST["favorite"])));
+							}
 						}
 						if(!empty($_POST["delete"] && $_SESSION["Authenticated"] && $_SESSION["root"] == 1))
 						{
 							$ret = $pdo->prepare("delete from house where id = ?");
 							$ret->execute(array(intval($_POST["delete"])));
-							echo $_POST["delete"];
 						}
 					}
 					$ret2 = $pdo->prepare("select * from favorite where user_id = " . $_SESSION["uid"]);
@@ -275,7 +280,16 @@
 							if(!empty($_POST["search_time"]) && $re->time != $_POST["search_time"])continue;
 							if(!empty($_POST["search_owner"]) && $owner != $_POST["search_owner"])continue;
 						}
-						$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]), "wifi" => !empty($_POST["wifi"]), "lockers" => !empty($_POST["lockers"]), "kitchen" => !empty($_POST["kitchen"]), "elevator" => !empty($_POST["elevator"]), "no smoking" => !empty($_POST["no_smoking"]), "television" => !empty($_POST["television"]), "breakfast" => !empty($_POST["breakfast"]), "toiletries provided" => !empty($_POST["toiletries_provided"]), "shuttle service" => !empty($_POST["shuttle_service"]));
+						$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]),
+						"wifi" => !empty($_POST["wifi"]),
+						"lockers" => !empty($_POST["lockers"]),
+						"kitchen" => !empty($_POST["kitchen"]),
+						"elevator" => !empty($_POST["elevator"]),
+						"no smoking" => !empty($_POST["no_smoking"]),
+						"television" => !empty($_POST["television"]),
+						"breakfast" => !empty($_POST["breakfast"]),
+						"toiletries provided" => !empty($_POST["toiletries_provided"]),
+						"shuttle service" => !empty($_POST["shuttle_service"]));
 					
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
 						$ret3->execute();
@@ -290,7 +304,7 @@
 								break;
 							}
 						}
-						if($flag != true)break;
+						if($flag != true)continue;
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
 						$ret3->execute();
 						

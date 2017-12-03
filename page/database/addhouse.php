@@ -79,7 +79,7 @@
 
 
 	<div class="container" align="center">
-		<h3>Update</h3><!--</div>-->
+		<h3>Add house</h3><!--</div>-->
 		<h4>
 			<?php
 				if($_SESSION["Authenticated"] != true)
@@ -94,139 +94,84 @@
 					header("Location: /database/house.php");
 					exit();
 				}
-				if(!empty($_POST["update"]))
+				if(!empty($_POST["addhouse"]))
 				{	
-					$ret = $pdo->prepare("delete from information where house_id = ?");
-					$ret->execute(array(intval($_SESSION["Update"])));
+					$ret = $pdo->prepare("insert into house (name, price, location, time, owner_id) values (?, ?, ?, ?, ?)");
+					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["uid"])));
+					$ret = $pdo->prepare("select * from house where name = ? and price = ? and location = ? and time = ? and owner_id = ?");
+					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["uid"])));
+					while($re = $ret->fetchObject())$id = $re->id;
+					
 					if(!empty($_POST["laundry_facilities"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "laundry facilities"));
+						$ret->execute(array($id, "laundry facilities"));
 					}
 					if(!empty($_POST["wifi"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "wifi"));
+						$ret->execute(array($id, "wifi"));
 					}
 					if(!empty($_POST["lockers"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "lockers"));
+						$ret->execute(array($id, "lockers"));
 					}
 					if(!empty($_POST["kitchen"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "kitchen"));
+						$ret->execute(array($id, "kitchen"));
 					}
 					if(!empty($_POST["elevator"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "elevator"));
+						$ret->execute(array($id, "elevator"));
 					}
 					if(!empty($_POST["no_smoking"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "no smoking"));
+						$ret->execute(array($id, "no smoking"));
 					}
 					if(!empty($_POST["television"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "television"));
+						$ret->execute(array($id, "television"));
 					}
 					if(!empty($_POST["breakfast"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "breakfast"));
+						$ret->execute(array($id, "breakfast"));
 					}
 					if(!empty($_POST["toiletries_provided"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "toiletries provided"));
+						$ret->execute(array($id, "toiletries provided"));
 					}
 					if(!empty($_POST["shuttle_service"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
-						$ret->execute(array(intval($_SESSION["Update"]), "shuttle service"));
+						$ret->execute(array($id, "shuttle service"));
 					}
-					$ret = $pdo->prepare("update house set name = ?, price = ?, location = ?, time = ? where id = ?");
-					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["Update"])));
 					header("Location: /database/house.php");
 					exit();
 				}
-				$ret = $pdo->prepare("select * from house where id = ? and owner_id = ?");
-				$ret->execute(array(intval($_SESSION["Update"]), intval($_SESSION["uid"])));
-				while($re = $ret->fetchObject())
-				{
-					$id = $re->id;
-					$name = $re->name;
-					$price = $re->price;
-					$location = $re->location;
-					$time = $re->time;
-				}
-				$ret = $pdo->prepare("select * from information where house_id = " . $id);
-				$ret->execute();
-				$flags = array("laundry facilities" => 0,"wifi" => 0, "lockers" => 0, "kitchen" => 0, "elevator" => 0, "no smoking" => 0, "television" => 0, "breakfast" => 0, "toiletries provided" => 0, "shuttle service" => 0);
-				while($re = $ret->fetchObject())
-				{
-					$flags[$re->information] = 1;
-				}
 			?>
 		</h4>
-		<form action="/database/update.php" method="post">
+		<form action="/database/addhouse.php" method="post">
 			<table class="table" style="height: 40px;">
 				<div class="form-check form-check-inline">
 					<tbody>
 						<tr>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["laundry facilities"] == 1)echo "checked";
-							?>
-							type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["wifi"] == 1)echo "checked";
-							?>
-							type="checkbox" name="wifi" value="true">wifi<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["lockers"] == 1)echo "checked";
-							?>
-							type="checkbox" name="lockers" value="true">lockers<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["kitchen"] == 1)echo "checked";
-							?>
-							type="checkbox" name="kitchen" value="true">kitchen<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["elevator"] == 1)echo "checked";
-							?>
-							type="checkbox" name="elevator" value="true">elevator<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["no smoking"] == 1)echo "checked";
-							?>
-							type="checkbox" name="no_smoking" value="true">no smoking<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["television"] == 1)echo "checked";
-							?>
-							type="checkbox" name="television" value="true">television<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["breakfast"] == 1)echo "checked";
-							?>
-							type="checkbox" name="breakfast" value="true">breakfast<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["toiletries provided"] == 1)echo "checked";
-							?>
-							type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["shuttle service"] == 1)echo "checked";
-							?>
-							type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="wifi" value="true">wifi<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="lockers" value="true">lockers<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="kitchen" value="true">kitchen<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="elevator" value="true">elevator<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="no_smoking" value="true">no smoking<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="television" value="true">television<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="breakfast" value="true">breakfast<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
+							<td><input class="form-check-input active" type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
 						</tr>
 					</tbody>
 				</div>
@@ -235,62 +180,16 @@
 				<thead class="thead-light">
 					<tr>
 						<form>
-							<th scope="col">
-								ID<br>
-								<input type="text" class="form-control" name="search_id" placeholder="ID"
-								<?php
-									echo "value=\"" . $id . "\"";
-								?>
-								readonly>
-							</th>
-							<th scope="col">
-								Name<br>
-								<input type="text" class="form-control" name="name" placeholder="Name"
-								<?php
-									echo "value=\"" . $name . "\"";
-								?>
-								>
-								
-							</th>
-							<th scope="col">
-								Price<br>
-								<input type="number" class="form-control" name="price" placeholder="Price"
-								<?php
-									echo "value=\"" . $price . "\"";
-								?>
-								>
-							</th>
-							<th scope="col">
-								Location<br>
-								<input type="text" class="form-control" name="location" placeholder="Location"
-								<?php
-									echo "value=\"" . $location . "\"";
-								?>
-								>
-							</th>
-							<th scope="col">
-								Time<br>
-								<input type="text" class="form-control" name="time" placeholder="Time"
-								<?php
-									echo "value=\"" . $time . "\"";
-								?>
-								>
-							</th>
-							<!--
-							<th scope="col">
-								Owner<br>
-								<input type="text" class="form-control" name="owner" placeholder="Owner"
-								<?php
-					//				echo "value=\"" . $owner . "\"";
-								?>
-								readonly>
-							</th>
-							-->
+							<th scope="col"><input type="text" class="form-control" name="name" placeholder="Name"><br></th>
+							<th scope="col"><input type="number" class="form-control" name="price" placeholder="Price"><br></th>
+							<th scope="col"><input type="text" class="form-control" name="location" placeholder="Location"><br></th>
+							<th scope="col"><input type="text" class="form-control" name="time" placeholder="Time"><br></th>
 							<th scope="col">
 								<div class="btn-group">
-									<button type="submit" name="update" value="1" class="btn btn-secondary">Update</button>
+									<button type="submit" name="addhouse" value="1" class="btn btn-secondary">Add</button>
 									<button type="submit" name="cancel" value="1" class="btn btn-secondary">Cancel</button>
 								</div>
+								<br><br>
 							</th>
 						</form>
 					</tr>

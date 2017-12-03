@@ -65,7 +65,7 @@
 
 
 	<div class="container" align="center">
-		<h3>My house</h3><!--</div>-->
+		<h3>My house</h3><!--</div>--><br>
 		<h4>
 			<?php
 				if($_SESSION["Authenticated"] != true)
@@ -85,189 +85,47 @@
 		</h4>
 		<form action="/database/house.php" method="post">
 			<table class="table" style="height: 40px;">
-				<div class="form-check form-check-inline">
-					<tbody>
-						<tr>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["laundry_facilities"]))echo "checked";
-							?>
-							type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["wifi"]))echo "checked";
-							?>
-							type="checkbox" name="wifi" value="true">wifi<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["lockers"]))echo "checked";
-							?>
-							type="checkbox" name="lockers" value="true">lockers<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["kitchen"]))echo "checked";
-							?>
-							type="checkbox" name="kitchen" value="true">kitchen<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["elevator"]))echo "checked";
-							?>
-							type="checkbox" name="elevator" value="true">elevator<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["no_smoking"]))echo "checked";
-							?>
-							type="checkbox" name="no_smoking" value="true">no smoking<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["television"]))echo "checked";
-							?>
-							type="checkbox" name="television" value="true">television<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["breakfast"]))echo "checked";
-							?>
-							type="checkbox" name="breakfast" value="true">breakfast<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["toiletries_provided"]))echo "checked";
-							?>
-							type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["shuttle_service"]))echo "checked";
-							?>
-							type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
-						</tr>
-					</tbody>
-				</div>
-			</table>
-			<table class="table" style="height: 40px;">
 				<thead class="thead-light">
 					<tr>
-						<form
-						
+						<form>
+							<th scope="col">ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Location</th>
+							<th scope="col">Time</th>
+							<th scope="col">Owner</th>
+							<th scope="col">Info</th>
 							<th scope="col">
-								<input type="text" class="form-control" name="search_id" placeholder="ID"
-								<?php
-									if(!empty($_POST["search"]) && !empty($_POST["search_id"]))echo "value=\"" . $_POST["search_id"] . "\"";
-								?>
-								><br>
-								ID
-							</th>
-							<th scope="col">
-								<input type="text" class="form-control" name="search_name" placeholder="Name"
-								<?php
-									if(!empty($_POST["search"]) && !empty($_POST["search_name"]))echo "value=\"" . $_POST["search_name"] . "\"";
-								?>
-								><br>
-								Name
-							</th>
-							<th scope="col">
-								<div class="input-group">
-									<input type="number" class="form-control" name="search_price_lb" placeholder="Lower"
-									<?php
-										if(!empty($_POST["search"]) && !empty($_POST["search_price_lb"]))echo "value=\"" . $_POST["search_price_lb"] . "\"";
-									?>
-									>
-									<span class="input-group-addon">-</span>
-									<input type="number" class="form-control" name="search_price_ub" placeholder="Upper"
-									<?php
-										if(!empty($_POST["search"]) && !empty($_POST["search_price_ub"]))echo "value=\"" . $_POST["search_price_ub"] . "\"";
-									?>
-									>
-								</div>
-								<br>
-								Price
-							</th>
-							<th scope="col">
-								<input type="text" class="form-control" name="search_location" placeholder="Location"
-								<?php
-									if(!empty($_POST["search"]) && !empty($_POST["search_location"]))echo "value=\"" . $_POST["search_location"] . "\"";
-								?>
-								><br>
-								Location
-							</th>
-							<th scope="col">
-								<input type="text" class="form-control" name="search_time" placeholder="Time"
-								<?php
-									if(!empty($_POST["search"]) && !empty($_POST["search_time"]))echo "value=\"" . $_POST["search_time"] . "\"";
-								?>
-								><br>
-								Time
-							</th>
-							<th scope="col">
-								<input type="text" class="form-control" name="search_owner" placeholder="Owner"
-								<?php
-									if(!empty($_POST["search"]) && !empty($_POST["search_owner"]))echo "value=\"" . $_POST["search_owner"] . "\"";
-								?>
-								><br>
-								Owner
-							</th>
-							<th scope="col">
-									<select class="form-control" style="width:7rem" name="sort">
-									<option selected value="default">Sort by</option>
-									<option value="pricea">Price asc</option>
-									<option value="priced">Price desc</option>
-									<option value="datea">Date asc</option>
-									<option value="dated">Date desc</option>
-									</select><br>
-								Info
-							</th>
-							<th scope="col">
-								<div class="btn-group">
-									<button type="submit" name="search" value="1" class="btn btn-secondary">Search</button>
-									<button type="submit" name="search" class="btn btn-secondary">Reset</button>
-								</div><br><br>
-								Operation
+								<button type="submit" name="addhouse" value="1" class="btn btn-secondary">Add a house</button>
 							</th>
 						</form>
 					</tr>
 				</thead>
 				<tbody>
 				<?php
-					if(empty($_POST["sort"]))$_POST["sort"] = "default";
 					if($_SERVER["REQUEST_METHOD"] == "POST")
 					{
-						if(!empty($_POST["update"]) && $_SESSION["Authenticated"])
+						if(!empty($_POST["addhouse"]))
 						{
-							$ret = $pdo->prepare("insert into favorite (user_id, favorite_id) values (?, ?)");
-							$ret->execute(array(intval($_SESSION["uid"]), intval($_POST["favorite"])));
+							header("Location: /database/addhouse.php");
+							exit();
 						}
-						if(!empty($_POST["delete"] && $_SESSION["Authenticated"] && $_SESSION["root"] == 1))
+						if(!empty($_POST["delete"]))
 						{
-							$ret = $pdo->prepare("delete from house where id = ?");
-							$ret->execute(array(intval($_POST["delete"])));
-							echo $_POST["delete"];
+							$sql = "delete from house where owner_id = ? and id = ?";
+							$ret = $pdo->prepare($sql);
+							$ret->execute(array(intval($_SESSION["uid"]), intval($_POST["delete"])));
 						}
 					}
-					$ret2 = $pdo->prepare("select * from favorite where user_id = " . $_SESSION["uid"]);
-					$ret2->execute();
-					$arr = array();
-					while($re2 = $ret2->fetchObject())$arr[] = $re2->favorite_id;
-					$sql = "select * from house where owner_id = " . $_SESSION["uid"];
-					if($_POST["sort"] == "default")$sql = $sql . "order by id asc";
-					if($_POST["sort"] == "datea")$sql = $sql . "order by time asc";
-					if($_POST["sort"] == "dated")$sql = $sql . "order by time desc";
-					if($_POST["sort"] == "pricea")$sql = $sql . "order by price asc";
-					if($_POST["sort"] == "priced")$sql = $sql . "order by price desc";
+					$sql = "select * from house where owner_id = " . $_SESSION["uid"] . " ";
 					$ret = $pdo->prepare($sql);
 					$ret->execute();
+					$notemp = false;
 					while($re = $ret->fetchObject())
 					{
 						$ret2 = $pdo->prepare("select * from account where id = " . $re->owner_id);
 						$ret2->execute();
 						while($re2 = $ret2->fetchObject())$owner = $re2->name;
-						if(!empty($_POST["search"]))
-						{
-							if(!empty($_POST["search_id"]) && $re->id != $_POST["search_id"])continue;
-							if(!empty($_POST["search_name"]) && $re->name != $_POST["search_name"])continue;
-							if(!empty($_POST["search_price_ub"]) && $re->price > intval($_POST["search_price_ub"]))continue;
-							if(!empty($_POST["search_price_lb"]) && $re->price < intval($_POST["search_price_lb"]))continue;
-							if(!empty($_POST["search_location"]) && $re->location != $_POST["search_location"])continue;
-							if(!empty($_POST["search_time"]) && $re->time != $_POST["search_time"])continue;
-							if(!empty($_POST["search_owner"]) && $owner != $_POST["search_owner"])continue;
-						}
 						$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]), "wifi" => !empty($_POST["wifi"]), "lockers" => !empty($_POST["lockers"]), "kitchen" => !empty($_POST["kitchen"]), "elevator" => !empty($_POST["elevator"]), "no smoking" => !empty($_POST["no_smoking"]), "television" => !empty($_POST["television"]), "breakfast" => !empty($_POST["breakfast"]), "toiletries provided" => !empty($_POST["toiletries_provided"]), "shuttle service" => !empty($_POST["shuttle_service"]));
 					
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
@@ -286,7 +144,7 @@
 						if($flag != true)break;
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
 						$ret3->execute();
-						
+						$notemp = true;
 						echo "<tr>";
 						echo "<td>" . $re->id . "</td>\n";
 						echo "<td>" . $re->name . "</td>\n";
@@ -325,6 +183,9 @@
 				</tbody>
 			</table>
 		</form>
+		<?php
+			if($notemp == false)echo "<img src=\"nohouse.png\">";
+		?>
 	</div>
 
 <!-- Bootstrap core JavaScript
