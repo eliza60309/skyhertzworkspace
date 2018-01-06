@@ -50,6 +50,11 @@
 							if($_SESSION["root"] == 1)echo "Admin";
 						?>
 						</a>
+						<a class="dropdown-item" href="/database/admin2.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin advanced";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -66,7 +71,7 @@
 
 	<div class="container" align="center">
 		<h3>Favorite</h3><!--</div>-->
-		<h4>
+		<br><h4>
 			<?php
 				if($_SESSION["Authenticated"] != true)
 				{

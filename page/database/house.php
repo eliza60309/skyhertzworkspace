@@ -50,6 +50,11 @@
 							if($_SESSION["root"] == 1)echo "Admin";
 						?>
 						</a>
+						<a class="dropdown-item" href="/database/admin2.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin advanced";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -121,13 +126,16 @@
 					$ret = $pdo->prepare($sql);
 					$ret->execute();
 					$notemp = false;
+					//$ret2 = $pdo->prepare("select * from info_list");
+					//$ret2->execute();
+					//$flags = array();
+					//while($re2 = $ret2->fetchObject())$flags[$re2->$information] = !empty(str_replace(" ", "_", $re2->$information));
 					while($re = $ret->fetchObject())
 					{
-						$ret2 = $pdo->prepare("select * from account where id = " . $re->owner_id);
-						$ret2->execute();
-						while($re2 = $ret2->fetchObject())$owner = $re2->name;
-						$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]), "wifi" => !empty($_POST["wifi"]), "lockers" => !empty($_POST["lockers"]), "kitchen" => !empty($_POST["kitchen"]), "elevator" => !empty($_POST["elevator"]), "no smoking" => !empty($_POST["no_smoking"]), "television" => !empty($_POST["television"]), "breakfast" => !empty($_POST["breakfast"]), "toiletries provided" => !empty($_POST["toiletries_provided"]), "shuttle service" => !empty($_POST["shuttle_service"]));
-					
+						$ret3 = $pdo->prepare("select * from account where id = " . $re->owner_id);
+						$ret3->execute();
+						while($re3 = $ret3->fetchObject())$owner = $re3->name;
+						//$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]), "wifi" => !empty($_POST["wifi"]), "lockers" => !empty($_POST["lockers"]), "kitchen" => !empty($_POST["kitchen"]), "elevator" => !empty($_POST["elevator"]), "no smoking" => !empty($_POST["no_smoking"]), "television" => !empty($_POST["television"]), "breakfast" => !empty($_POST["breakfast"]), "toiletries provided" => !empty($_POST["toiletries_provided"]), "shuttle service" => !empty($_POST["shuttle_service"]));
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
 						$ret3->execute();
 						while($re3 = $ret3->fetchObject())$flags[$re3->information] = false;
@@ -167,7 +175,7 @@
 						echo "<td>";
 						while($re3 = $ret3->fetchObject())
 						{
-							$flags[$re3->information] = 1;
+							//$flags[$re3->information] = 1;
 							echo  "<span class=\"badge badge-pill badge-secondary\">" . $re3->information . "</span><br>";
 						}
 						echo "</td>";
@@ -175,7 +183,7 @@
 						echo "<td><div class=\"btn-group\">";
 						echo "<button type=\"submit\" name=\"update\" value=\"" . $re->id . "\" class=\"btn btn-secondary\">Update</button>";
 						echo "<button type=\"submit\" name=\"delete\" value=\"" . $re->id . "\" class=\"btn btn-secondary\">Delete</button>";
-						$flags = array();
+						//$flags = array();
 						echo "</div></td>";
 						echo "</tr>";
 					}

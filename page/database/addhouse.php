@@ -50,6 +50,11 @@
 							if($_SESSION["root"] == 1)echo "Admin";
 						?>
 						</a>
+						<a class="dropdown-item" href="/database/admin2.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin advanced";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -94,14 +99,35 @@
 					header("Location: /database/house.php");
 					exit();
 				}
+				$location_exist = false;
 				if(!empty($_POST["addhouse"]))
+				{
+					$ret = $pdo->prepare("select * from location");
+					$ret->execute();
+					while($re = $ret->fetchObject())
+					{
+						if($_POST["location"] == $re->location)$location_exist = true;
+					}
+				}
+				if($location_exist == false);
+				else if(!empty($_POST["addhouse"]))
 				{	
 					$ret = $pdo->prepare("insert into house (name, price, location, time, owner_id) values (?, ?, ?, ?, ?)");
 					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["uid"])));
 					$ret = $pdo->prepare("select * from house where name = ? and price = ? and location = ? and time = ? and owner_id = ?");
 					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["uid"])));
 					while($re = $ret->fetchObject())$id = $re->id;
-					
+					$ret = $pdo->prepare("select * from info_list");
+					$ret->execute();
+					while($re = $ret->fetchObject())
+					{
+						if(!empty($_POST[str_replace(" ", "_", $re->information)]))
+						{
+							$ret2 = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
+							$ret2->execute(array($id, $re->information));
+						}
+					}
+					/*
 					if(!empty($_POST["laundry_facilities"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
@@ -151,7 +177,7 @@
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
 						$ret->execute(array($id, "shuttle service"));
-					}
+					}*/
 					header("Location: /database/house.php");
 					exit();
 				}
@@ -162,6 +188,19 @@
 				<div class="form-check form-check-inline">
 					<tbody>
 						<tr>
+						<?php
+							$ret = $pdo->prepare("select * from info_list");
+							$ret->execute();
+							while($re = $ret->fetchObject())
+							{
+								echo "<td><input class=\"form-check-input active\" type=\"checkbox\" name=\"";
+								echo str_replace(" ", "_", $re->information);
+								echo "\" value=\"true\">";
+								echo $re->information;
+								echo "<br></td>";
+							}
+						?>
+						<!--
 							<td><input class="form-check-input active" type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
 							<td><input class="form-check-input active" type="checkbox" name="wifi" value="true">wifi<br></td>
 							<td><input class="form-check-input active" type="checkbox" name="lockers" value="true">lockers<br></td>
@@ -172,6 +211,7 @@
 							<td><input class="form-check-input active" type="checkbox" name="breakfast" value="true">breakfast<br></td>
 							<td><input class="form-check-input active" type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
 							<td><input class="form-check-input active" type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
+							-->
 						</tr>
 					</tbody>
 				</div>
@@ -182,7 +222,11 @@
 						<form>
 							<th scope="col"><input type="text" class="form-control" name="name" placeholder="Name"><br></th>
 							<th scope="col"><input type="number" class="form-control" name="price" placeholder="Price"><br></th>
-							<th scope="col"><input type="text" class="form-control" name="location" placeholder="Location"><br></th>
+							<th scope="col"><input type="text" class="form-control 
+							<?php
+								if($location_exist == false && !empty($_POST["addhouse"]))echo "is-invalid";
+							?>
+							" name="location" placeholder="Location"><br></th>
 							<th scope="col"><input type="text" class="form-control" name="time" placeholder="Time"><br></th>
 							<th scope="col">
 								<div class="btn-group">

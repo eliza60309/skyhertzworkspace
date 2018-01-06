@@ -50,6 +50,11 @@
 							if($_SESSION["root"] == 1)echo "Admin";
 						?>
 						</a>
+						<a class="dropdown-item" href="/database/admin2.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin advanced";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -96,56 +101,21 @@
 				<div class="form-check form-check-inline">
 					<tbody>
 						<tr>
-							<td><input class="form-check-input active"
 							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["laundry_facilities"]))echo "checked";
+								$ret = $pdo->prepare("select * from info_list");
+								$ret->execute();
+								while($re = $ret->fetchObject())
+								{
+									echo "<td><input class=\"form-check-input active\"";
+									if(!empty($_POST[str_replace(" ", "_", $re->information)]) && !empty($_POST["search"]))echo "checked ";
+									echo "type=\"checkbox\" name=\"";
+									echo str_replace(" ", "_", $re->information);
+									echo "\" value=\"true\">";
+									echo $re->information;
+									echo "<br></td>";
+
+								}
 							?>
-							type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["wifi"]))echo "checked";
-							?>
-							type="checkbox" name="wifi" value="true">wifi<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["lockers"]))echo "checked";
-							?>
-							type="checkbox" name="lockers" value="true">lockers<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["kitchen"]))echo "checked";
-							?>
-							type="checkbox" name="kitchen" value="true">kitchen<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["elevator"]))echo "checked";
-							?>
-							type="checkbox" name="elevator" value="true">elevator<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["no_smoking"]))echo "checked";
-							?>
-							type="checkbox" name="no_smoking" value="true">no smoking<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["television"]))echo "checked";
-							?>
-							type="checkbox" name="television" value="true">television<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["breakfast"]))echo "checked";
-							?>
-							type="checkbox" name="breakfast" value="true">breakfast<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["toiletries_provided"]))echo "checked";
-							?>
-							type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if(!empty($_POST["search"]) && !empty($_POST["shuttle_service"]))echo "checked";
-							?>
-							type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
 						</tr>
 					</tbody>
 				</div>
@@ -280,7 +250,11 @@
 							if(!empty($_POST["search_time"]) && $re->time != $_POST["search_time"])continue;
 							if(!empty($_POST["search_owner"]) && $owner != $_POST["search_owner"])continue;
 						}
-						$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]),
+						$ret2 = $pdo->prepare("select * from info_list");
+						$ret2->execute();
+						$flags = array();
+						while($re2 = $ret2->fetchObject())$flags[$re2->information] = !empty($_POST[str_replace(" ", "_", $re2->information)]);
+						/*$flags = array("laundry facilities" => !empty($_POST["laundry_facilities"]),
 						"wifi" => !empty($_POST["wifi"]),
 						"lockers" => !empty($_POST["lockers"]),
 						"kitchen" => !empty($_POST["kitchen"]),
@@ -289,7 +263,7 @@
 						"television" => !empty($_POST["television"]),
 						"breakfast" => !empty($_POST["breakfast"]),
 						"toiletries provided" => !empty($_POST["toiletries_provided"]),
-						"shuttle service" => !empty($_POST["shuttle_service"]));
+						"shuttle service" => !empty($_POST["shuttle_service"]));*/
 					
 						$ret3 = $pdo->prepare("select * from information where house_id = " . $re->id);
 						$ret3->execute();

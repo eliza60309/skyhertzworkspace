@@ -1,6 +1,14 @@
 <?php
 	session_start();
 	$dsn = "mysql:host=localhost;dbname=db";
+	$secret = "6LeifD4UAAAAALCF0Acfjk3yvSd6H85Hh1zA8Q1V";
+	if(empty($_POST["g-recaptcha-response"]))
+	{
+		$_SESSION["recap"] = "failed";
+		header("Location: /database/index.php");
+		exit();
+	}
+						
 	$pdo = new PDO($dsn, "webuser");
 	$ret = $pdo->prepare("select * from `account` where username = ?");
 	

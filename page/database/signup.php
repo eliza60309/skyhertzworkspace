@@ -51,6 +51,7 @@
 	</nav>
 
 
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 	<div class="container" align="center">
 		<div class="card" align="center" style="width: 30rem;">
 			<div class="card-body">
@@ -77,7 +78,8 @@
 						if($_POST["email"] == "")$emailinvalid = true;
 						if(strpos($_POST["email"], '@') == false)$emailinvalid = true;
 						if(strpos($_POST["email"], '.') == false)$emailinvalid = true;
-						if($usernameinvalid == true || $passwordinvalid == true || $confirmpasswordinvalid == true || $nameinvalid == true || $emailinvalid == true);
+						if(empty($_POST["g-recaptcha-response"]))$recaptchainvalid = true;
+						if($usernameinvalid == true || $passwordinvalid == true || $confirmpasswordinvalid == true || $nameinvalid == true || $emailinvalid == true || $recaptchainvalid == true);
 						else
 						{
 							$ret = $pdo->prepare("insert into account (`username`, `passwd`, `name`, `email`, `root`) values (?, ?, ?, ?, 0)");		
@@ -131,7 +133,10 @@
 							?>
 						" name="email" placeholder="Email">
 					</div><br>
-
+					<?php
+						if($recaptchainvalid == true)echo "recapcha failed<br>";
+					?>
+					<div class="g-recaptcha" data-sitekey="6LeifD4UAAAAAG1sxU9_uYzqr761VC5Jifru17VK"></div><br>
 					<button type="submit" class="btn btn-secondary">submit</button>
 				</form>
 			</div>

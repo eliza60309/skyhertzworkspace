@@ -74,11 +74,6 @@
 
 
 	<div class="container" align="center">
-	<!--
-		<div class="card" align="center" style="width: 30rem;">
-			<div class="card-body">
-				<div class="card-title">--><h3>User information</h3><!--</div>-->
-					<h4>
 						<?php
 							if($_SESSION["Authenticated"] != true)
 							{
@@ -97,59 +92,119 @@
 									exit();
 								}
 							}
+							if($_SERVER["REQUEST_METHOD"] == "POST")
+							{
+								if(!empty($_POST["deleteinfo"]))
+								{
+									$ret = $pdo->prepare("delete from info_list where information = ?");
+									$ret->execute(array(str_replace("_", " ", $_POST["deleteinfo"])));
+									$ret = $pdo->prepare("delete from information where information = ?");
+									$ret->execute(array(str_replace("_", " ", $_POST["deleteinfo"])));
+									
+								}
+								if(!empty($_POST["deletelocation"]))
+								{
+									$ret = $pdo->prepare("delete from location where location = ?");
+									$ret->execute(array($_POST["deletelocation"]));
+									$ret = $pdo->prepare("update house set location = \"UNKNOWN\" where location = ?");
+									$ret->execute(array($_POST["deletelocation"]));
+								}
+								if(!empty($_POST["addinformation"]) && !empty($_POST["information"]) && $_POST["information"] != "")
+								{
+									$ret = $pdo->prepare("select * from info_list where information = ?");
+									$ret->execute(array($_POST["information"]));
+									if($ret->fetchObject())$i = true;
+									else 
+									{
+										$ret = $pdo->prepare("insert into info_list(information) value (?)");
+										$ret->execute(array($_POST["information"]));
+									}
+								}
+								if(!empty($_POST["addlocation"]) && !empty($_POST["location"]) && $_POST["location"] != "")
+								{
+									$ret = $pdo->prepare("select * from location where location = ?");
+									$ret->execute(array($_POST["location"]));
+									if($ret->fetchObject())$j = true;
+									else 
+									{
+										$ret = $pdo->prepare("insert into location(location) value (?)");
+										$ret->execute(array($_POST["location"]));
+									}
+								}
+							}
 						?>
 					</h4>
-						<form action="/database/action.php" method="post">
+						<form action="/database/admin2.php" method="post">
+						<div class="row">
+							<div class="col">
 							<table class="table" style="height: 40px;">
-								<thead class="thead-light">
-									<tr>
-										<th scope="col">Account</th>
-										<th scope="col">Name</th>
-										<th scope="col">Email</th>
-										<th scope="col">Authority</th>
-										<th scope="col">Operation</th>
-									</tr>
-								</thead>
+								<h3>delete information</h3>
 								<tbody>
+								<tr>
 								<?php
-									$ret = $pdo->prepare("select * from `account`");
+									$ret = $pdo->prepare("select * from info_list");
 									$ret->execute();
+									$cnt = 0;
 									while($re = $ret->fetchObject())
 									{
-										echo "<tr>";
-										echo "<td>" . $re->username . "</td>\n";
-										echo "<td>" . $re->name . "</td>\n";
-										echo "<td>" . $re->email . "</td>\n";
-										if($re->username == $_SESSION["username"])echo "<td>Admin</td><td></td>\n";
-										else if($re->root == 1)
+										echo "<td><button class=\"btn btn-secondary\" name=\"deleteinfo\" value=\"" . str_replace(" ", "_", $re->information) . "\">" . $re->information . "</button></td>";
+										$cnt++;
+										if($cnt == 3)
 										{
-											echo "<td>Admin</td>\n";
-											echo "<td><select class=\"form-control\" style=\"width:7rem\" name=\"option_" . $re->username . "\">\n";
-											echo "<option selected>None</option>\n";
-											echo "<option value=\"kill\">Kill</option></select></td>\n";
+											echo "</tr><tr>";
+											$cnt = 0;
 										}
-										else
-										{
-											echo "<td>User</td>\n";
-											echo "<td><select class=\"form-control\" style=\"width:7rem\" name=\"option_" . $re->username . "\">\n";
-											echo "<option selected>None</option>\n";
-											echo "<option value=\"promote\">Promote</option>\n";
-											echo "<option value=\"kill\">Kill</option></select></td>\n";
-										}
-										echo "</tr>";
 									}
+									
 								?>
+								<?php
+								?>
+								</tr>
 								</tbody>
 							</table>
 							<div class="input-group">
-							<span class="input-group-addon">Add user</span>
-							<input type="text" class="form-control" name="username" placeholder="Username">
-							<input type="password" class="form-control" name="password" placeholder="Password">
-							<input type="text" class="form-control" name="email" placeholder="Email">
-							<input type="text" class="form-control" name="name" placeholder="name">
-							<span class="input-group-addon">
-							<input type="checkbox" name="root">&nbsp;&nbsp;Admin</input></span>&nbsp;&nbsp;
-							<button class="btn btn-secondary" action="">Operate</button>
+							<span class="input-group-addon">Add information</span>
+							<input type="text" class="form-control
+							<?php
+								if($i == true)echo " is-invalid";
+							?>
+							" name="information" placeholder="Information">
+							<button class="btn btn-secondary" name="addinformation" value="true">Add</button>
+							</div>
+							</div>
+							<div class="col">
+							<table class="table" style="height: 40px;">
+								<h3>delete location</h3>
+								<tbody>
+								<tr>
+								<?php
+									$ret = $pdo->prepare("select * from location");
+									$ret->execute();
+									$cnt = 0;
+									while($re = $ret->fetchObject())
+									{
+										echo "<td><button class=\"btn btn-secondary\" name=\"deletelocation\" value=\"" . $re->location . "\">" . $re->location . "</button><td>";
+										$cnt++;
+										if($cnt == 3)
+										{
+											echo "</tr><tr>";
+											$cnt = 0;
+										}
+									}
+									
+								?>
+								</tr>
+								</tbody>
+							</table>
+							<div class="input-group">
+							<span class="input-group-addon">Add location</span>
+							<input type="text" class="form-control
+							<?php
+								if($j == true)echo " is-invalid";
+							?>
+							" name="location" placeholder="Location">
+							<button class="btn btn-secondary" name="addlocation" value="true">Add</button>
+							</div>
 							</div>
 						</form>
 					<!--

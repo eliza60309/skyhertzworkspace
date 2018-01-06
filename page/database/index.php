@@ -66,7 +66,7 @@
 		</div>
 	</nav>
 
-
+	<script src="https://www.google.com/recaptcha/api.js"></script>
 	<div class="container" align="center">
 		<div class="card" align="center" style="width: 30rem;">
 			<div class="card-body">
@@ -86,6 +86,16 @@
 						?>
 						" name="password" placeholder="Password">
 					</div><br>
+					<?php
+						if($_SESSION["recap"] == "failed")
+						{
+							echo "<h1>Recaptcha failed</h1><br>";
+							echo "<a href=\"/database/logout.php\">Try again</a><br>";
+							//session_unset();
+							//session_destroy();
+						}
+						else echo "<div class=\"g-recaptcha\" data-sitekey=\"6LeifD4UAAAAAG1sxU9_uYzqr761VC5Jifru17VK\"></div><br>";
+					?>
 					<button type="submit" class="btn btn-secondary">submit</button>&emsp;<a href="/database/signup.php">Sign up</a>
 				</form>
 			</div>

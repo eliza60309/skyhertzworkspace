@@ -50,6 +50,11 @@
 							if($_SESSION["root"] == 1)echo "Admin";
 						?>
 						</a>
+						<a class="dropdown-item" href="/database/admin2.php">
+						<?php
+							if($_SESSION["root"] == 1)echo "Admin advanced";
+						?>
+						</a>
 					</div>
 				</li>
 				<li>
@@ -94,10 +99,32 @@
 					header("Location: /database/house.php");
 					exit();
 				}
+				$location_exist = false;
 				if(!empty($_POST["update"]))
+				{
+					$ret = $pdo->prepare("select * from location");
+					$ret->execute();
+					while($re = $ret->fetchObject())
+					{
+						if($_POST["location"] == $re->location)$location_exist = true;
+					}
+				}
+				if($location_exist == false);//echo "location doesn't exist";
+				else if(!empty($_POST["update"]))
 				{	
 					$ret = $pdo->prepare("delete from information where house_id = ?");
 					$ret->execute(array(intval($_SESSION["Update"])));
+					
+					$ret = $pdo->prepare("select * from info_list");
+					$ret->execute();
+					while($re = $ret->fetchObject())
+					{
+						if(!empty($_POST[str_replace(" ", "_", $re->information)]))
+						{
+							$ret2 = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
+							$ret2->execute(array(intval($_SESSION["Update"]), $re->information));
+						}
+					}/*
 					if(!empty($_POST["laundry_facilities"]))
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
@@ -147,7 +174,7 @@
 					{
 						$ret = $pdo->prepare("insert into information (house_id, information) values (?, ?)");
 						$ret->execute(array(intval($_SESSION["Update"]), "shuttle service"));
-					}
+					}*/
 					$ret = $pdo->prepare("update house set name = ?, price = ?, location = ?, time = ? where id = ?");
 					$ret->execute(array($_POST["name"], intval($_POST["price"]), $_POST["location"], $_POST["time"], intval($_SESSION["Update"])));
 					header("Location: /database/house.php");
@@ -165,7 +192,11 @@
 				}
 				$ret = $pdo->prepare("select * from information where house_id = " . $id);
 				$ret->execute();
-				$flags = array("laundry facilities" => 0,"wifi" => 0, "lockers" => 0, "kitchen" => 0, "elevator" => 0, "no smoking" => 0, "television" => 0, "breakfast" => 0, "toiletries provided" => 0, "shuttle service" => 0);
+				$ret2 = $pdo->prepare("select * from info_list");
+				$ret2->execute();
+				$flags = array();
+				while($re2 = $ret2->fetchObject())$flags[$re2->information] = !empty($_POST[str_replace(" ", "_", $re2->information)]);
+				//$flags = array("laundry facilities" => 0,"wifi" => 0, "lockers" => 0, "kitchen" => 0, "elevator" => 0, "no smoking" => 0, "television" => 0, "breakfast" => 0, "toiletries provided" => 0, "shuttle service" => 0);
 				while($re = $ret->fetchObject())
 				{
 					$flags[$re->information] = 1;
@@ -177,56 +208,21 @@
 				<div class="form-check form-check-inline">
 					<tbody>
 						<tr>
-							<td><input class="form-check-input active"
 							<?php
-								if($flags["laundry facilities"] == 1)echo "checked";
+								$ret = $pdo->prepare("select * from info_list");
+								$ret->execute();
+								while($re = $ret->fetchObject())
+								{
+									echo "<td><input class=\"form-check-input active\"";
+									if($flags[$re->information] == 1)echo "checked ";
+									echo "type=\"checkbox\" name=\"";
+									echo str_replace(" ", "_", $re->information);
+									echo "\" value=\"true\">";
+									echo $re->information;
+									echo "<br></td>";
+
+								}
 							?>
-							type="checkbox" name="laundry_facilities" value="true">laundry facilities<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["wifi"] == 1)echo "checked";
-							?>
-							type="checkbox" name="wifi" value="true">wifi<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["lockers"] == 1)echo "checked";
-							?>
-							type="checkbox" name="lockers" value="true">lockers<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["kitchen"] == 1)echo "checked";
-							?>
-							type="checkbox" name="kitchen" value="true">kitchen<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["elevator"] == 1)echo "checked";
-							?>
-							type="checkbox" name="elevator" value="true">elevator<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["no smoking"] == 1)echo "checked";
-							?>
-							type="checkbox" name="no_smoking" value="true">no smoking<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["television"] == 1)echo "checked";
-							?>
-							type="checkbox" name="television" value="true">television<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["breakfast"] == 1)echo "checked";
-							?>
-							type="checkbox" name="breakfast" value="true">breakfast<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["toiletries provided"] == 1)echo "checked";
-							?>
-							type="checkbox" name="toiletries_provided" value="true">toiletries provided<br></td>
-							<td><input class="form-check-input active"
-							<?php
-								if($flags["shuttle service"] == 1)echo "checked";
-							?>
-							type="checkbox" name="shuttle_service" value="true">shuttle service<br></td>
 						</tr>
 					</tbody>
 				</div>
@@ -262,7 +258,11 @@
 							</th>
 							<th scope="col">
 								Location<br>
-								<input type="text" class="form-control" name="location" placeholder="Location"
+								<input type="text" class="form-control 
+								<?php
+									if(!empty($_POST["update"]) && $location_exist == false)echo " is-invalid";
+								?>
+								" name="location" placeholder="Location"
 								<?php
 									echo "value=\"" . $location . "\"";
 								?>
